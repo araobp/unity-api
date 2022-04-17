@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Newtonsoft.Json;
+using System.Collections;
 
 public class Box
 {
@@ -12,7 +13,13 @@ public class Box
 public class Controller : RestClient
 {
     [SerializeField]
-    Animator animator;
+    Animator animatorBox0;
+
+    [SerializeField]
+    Animator animatorBox1;
+
+    [SerializeField]
+    Animator animatorBox2;
 
     [SerializeField]
     TMP_InputField InputURL;
@@ -55,28 +62,96 @@ public class Controller : RestClient
             PlayerPrefs.SetString("password", text);
             ep.password = text;
         });
+
+        StartCoroutine(poling());
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.M))
+        if (Input.GetKeyDown(KeyCode.A))
         {
-            animator.SetTrigger("Move");
+            animatorBox0.SetTrigger("Move");
         }
+        else if (Input.GetKeyDown(KeyCode.S))
+        {
+            animatorBox1.SetTrigger("Move");
+        }
+        else if (Input.GetKeyDown(KeyCode.D))
+        {
+            animatorBox2.SetTrigger("Move");
+        }
+        /*
         else if (Input.GetKeyDown(KeyCode.F))
         {
             fetch();
         }
+        */
     }
+
+    IEnumerator poling() {
+        while (true)
+        {
+            Debug.Log("poling");
+            if (!isFetching) fetch();
+            yield return new WaitForSeconds(3);
+        }
+    }
+
+    bool checkIfIdle(int id)
+    {
+        bool isIdle = true;
+        switch(id)
+        {
+            case 0:
+                isIdle = animatorBox0.GetCurrentAnimatorStateInfo(0).IsName("Idle");
+                break;
+            case 1:
+                isIdle = animatorBox1.GetCurrentAnimatorStateInfo(0).IsName("Idle");
+                break;
+            case 2:
+                isIdle = animatorBox2.GetCurrentAnimatorStateInfo(0).IsName("Idle");
+                break;
+            default:
+                break;
+        }
+        return isIdle;
+    }
+
+    bool isFetching = false;
 
     void fetch()
     {
+        isFetching = true;
         Get(ep, "/box", (err, text) => {
             
             List<Box> boxes = JsonConvert.DeserializeObject<List<Box>>(text);
             boxes.ForEach(b => {
                 Debug.Log($"{b.id}, {b.move}");
+                switch(b.id)
+                {
+                    case 0:
+                        if (checkIfIdle(0) && b.move)
+                        {
+                            animatorBox0.SetTrigger("Move");
+                        }
+                        break;
+                    case 1:
+                        if (checkIfIdle(1) && b.move)
+                        {
+                            animatorBox1.SetTrigger("Move");
+                        }
+                        break;
+                    case 2:
+                        if (checkIfIdle(2) && b.move)
+                        {
+                            animatorBox2.SetTrigger("Move");
+                        }
+                        break;
+                    default:
+                        break;
+                }
+                isFetching = false;
             });
         });
     }
