@@ -4,14 +4,17 @@ using TMPro;
 using Newtonsoft.Json;
 using System.Collections;
 
-public class Box
+public class Box__c
 {
-    public int id;
-    public bool move;
+    public double id__c;
+    public bool move__c;
 }
 
 public class Controller : RestClient
 {
+    [SerializeField]
+    GameObject ConfigPanel;
+
     [SerializeField]
     Animator animatorBox0;
 
@@ -63,12 +66,19 @@ public class Controller : RestClient
             ep.password = text;
         });
 
+        ConfigPanel.SetActive(false);
+
         StartCoroutine(poling());
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            ConfigPanel.SetActive(!ConfigPanel.activeSelf);
+        }
+
         if (Input.GetKeyDown(KeyCode.A))
         {
             animatorBox0.SetTrigger("Move");
@@ -125,25 +135,25 @@ public class Controller : RestClient
         isFetching = true;
         Get(ep, "/box", (err, text) => {
             
-            List<Box> boxes = JsonConvert.DeserializeObject<List<Box>>(text);
+            List<Box__c> boxes = JsonConvert.DeserializeObject<List<Box__c>>(text);
             boxes.ForEach(b => {
-                Debug.Log($"{b.id}, {b.move}");
-                switch(b.id)
+                Debug.Log($"{b.id__c}, {b.move__c}");
+                switch(b.id__c)
                 {
                     case 0:
-                        if (checkIfIdle(0) && b.move)
+                        if (checkIfIdle(0) && b.move__c)
                         {
                             animatorBox0.SetTrigger("Move");
                         }
                         break;
                     case 1:
-                        if (checkIfIdle(1) && b.move)
+                        if (checkIfIdle(1) && b.move__c)
                         {
                             animatorBox1.SetTrigger("Move");
                         }
                         break;
                     case 2:
-                        if (checkIfIdle(2) && b.move)
+                        if (checkIfIdle(2) && b.move__c)
                         {
                             animatorBox2.SetTrigger("Move");
                         }
