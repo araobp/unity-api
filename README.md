@@ -10,6 +10,6 @@ Hit "c" key to show a config window, then enter Heroku app's URL of [spring-api]
 
 Config Vars of the Heroku app,
 ```
-ARAOBP_APIMOCK_USERNAME_DEFAULT: <HTTP basic auth username>
-ARAOBP_APIMOCK_PASSWORD_DEFAULT: <HTTP basic auth password>
+BOX_USERNAME_DEFAULT: <HTTP basic auth username>
+BOX_PASSWORD_DEFAULT: <HTTP basic auth password>
 ```
