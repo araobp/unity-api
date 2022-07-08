@@ -188,7 +188,7 @@ public class RestClient : MonoBehaviour
             case EndPoint.AuthType.BASIC:
                 webRequest.SetRequestHeader("Authorization", endPoint.credential);
                 break;
-            case EndPoint.AuthType.API_KEY:  // Note: API_KEY auth is not used for Mendix
+            case EndPoint.AuthType.API_KEY:
                 webRequest.SetRequestHeader("X-Contacts-AppId", endPoint.appId);
                 webRequest.SetRequestHeader("X-Contacts-Key", endPoint.apiKeyB64);
                 break;
